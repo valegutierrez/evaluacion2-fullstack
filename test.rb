@@ -1,6 +1,5 @@
 # File manipulation:
 file = File.open('students.csv', 'r')
-average_file = File.open('studentsaverage.csv', 'r')
 info = file.readlines
 students = []
 info.each do |student|
@@ -22,19 +21,17 @@ def get_averages(people)
   write_averages(arr)
 end
 
-# Escribe los promedios
+# Escribe los promedios y lee el archivo que se genera con los promedios
 def write_averages(arr)
   newfile = File.open('studentsaverage.csv', 'w')
   arr.each do |h|
     newfile.puts "#{h[:name]}, #{h[:average]}"
   end
   newfile.close
-end
-
-# Lee el archivo que se genera con los promedios
-def read_averages(path)
+  average_file = File.open('studentsaverage.csv', 'r')
   puts 'Nombre, Promedio'
-  puts path.readlines
+  puts average_file.readlines
+  average_file.close
 end
 
 # Calcula la cantidad de inasistencias
@@ -44,8 +41,9 @@ def count_noattendance(people)
 end
 
 # Verifica si un estudiante aprobó o no
-def approved_student?(path, num)
-  data = path.readlines.map(&:chomp)
+def approved_student?(num)
+  average_file = File.open('studentsaverage.csv', 'r')
+  data = average_file.readlines.map(&:chomp)
   arr = []
   data.each do |i|
     separate = i.split(', ')
@@ -71,11 +69,10 @@ while options != 4
   case options
     when 1
       get_averages(students)
-      read_averages(average_file)
     when 2
       count_noattendance(students)
     when 3
-      approved_student?(average_file, 5)
+      approved_student?(5)
     when 4
       exit
     else
